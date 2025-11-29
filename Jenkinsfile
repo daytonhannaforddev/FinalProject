@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -24,9 +28,9 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 bat '''
-                docker stop atm-container || true
-                docker rm atm-container || true
-                docker run -d -p 8081:8081 --name atm-container atm-app:latest
+                    docker stop atm-container || true
+                    docker rm atm-container || true
+                    docker run -d -p 8081:8081 --name atm-container atm-app:latest
                 '''
             }
         }
