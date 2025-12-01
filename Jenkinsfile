@@ -28,6 +28,34 @@ pipeline {
                 '''
             }
         }
+
+        stage('Performance Test') {
+            steps {
+                echo 'Running JMeter load test...'
+
+                // Create results directory
+                bat 'mkdir jmeter\\results || echo results folder exists'
+
+                // Run JMeter test
+                bat '''
+                    jmeter ^
+                        -n ^
+                        -t jmeter\\ATM_Load_Test.jmx ^
+                        -l jmeter\\results\\results.jtl ^
+                        -j jmeter\\results\\jmeter.log
+                '''
+            }
+
+            post {
+                always {
+                    archiveArtifacts artifacts: 'jmeter/results/*', allowEmptyArchive: true
+                }
+                unsuccessful {
+                    echo 'Performance test failed! Build marked as UNSTABLE.'
+                    unstable('Load test thresholds not met')
+                }
+            }
+        }
     }
 
     post {
@@ -38,29 +66,4 @@ pipeline {
             echo "Pipeline failed!"
         }
     }
-
-    stage('Performance Test') {
-    steps {
-        echo 'Running JMeter load test...'
-
-        sh """
-            jmeter \
-                -n \
-                -t jmeter/ATM_Load_Test.jmx \
-                -l jmeter/results/results.jtl \
-                -j jmeter/results/jmeter.log
-        """
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: 'jmeter/results/*', allowEmptyArchive: true
-        }
-        unsuccessful {
-            echo 'Performance test failed! Build marked as unstable.'
-            unstable('Load test thresholds not met')
-        }
-    }
-}
-
 }
