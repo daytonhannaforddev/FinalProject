@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         JMETER_HOME = 'C:\\Users\\Dayton\\Documents\\apache-jmeter'
-        PATH = "${env.PATH};${env.JMETER_HOME}"
+        PATH = "${env.PATH};${env.JMETER_HOME}\\bin""
     }
 
     stages {
