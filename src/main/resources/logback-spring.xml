@@ -1,9 +1,28 @@
 <configuration>
-    <appender name="jsonConsole" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <fieldName>@timestamp</fieldName>
+                </timestamp>
+                <logLevel>
+                    <fieldName>level</fieldName>
+                </logLevel>
+                <loggerName>
+                    <fieldName>logger_name</fieldName>
+                </loggerName>
+                <threadName>
+                    <fieldName>thread</fieldName>
+                </threadName>
+                <message />
+                <stackTrace />
+            </providers>
+        </encoder>
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="jsonConsole" />
+        <appender-ref ref="JSON_CONSOLE" />
     </root>
+
 </configuration>
