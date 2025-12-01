@@ -7,12 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/daytonhannaforddev/FinalProject.git'
-            }
-        }
-
         stage('Build JAR') {
             steps {
                 bat 'mvn clean package -DskipTests'
@@ -30,7 +24,7 @@ pipeline {
                 bat '''
                     docker stop atm-container || true
                     docker rm atm-container || true
-                    docker run -d -p 8081:8080 --name atm-container atm-app:latest
+                    docker run -d -p 8081:8081 --name atm-container atm-app:latest
                 '''
             }
         }
