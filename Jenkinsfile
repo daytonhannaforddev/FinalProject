@@ -33,17 +33,11 @@ pipeline {
             steps {
                 echo 'Running JMeter load test...'
 
-                // Create results directory
-                bat 'mkdir jmeter\\results || echo results folder exists'
-
-                // Run JMeter test
-                bat '''
-                    jmeter ^
-                        -n ^
-                        -t jmeter\\ATM_Load_Test.jmx ^
-                        -l jmeter\\results\\results.jtl ^
-                        -j jmeter\\results\\jmeter.log
-                '''
+                bat """
+                    jmeter -n -t jmeter/ATM_Load_Test.jmx ^
+                           -l jmeter/results/results.jtl ^
+                           -j jmeter/results/jmeter.log
+                """
             }
 
             post {
@@ -61,6 +55,9 @@ pipeline {
     post {
         success {
             echo "Pipeline complete!"
+        }
+        unstable {
+            echo "Pipeline completed but tests were unstable"
         }
         failure {
             echo "Pipeline failed!"
