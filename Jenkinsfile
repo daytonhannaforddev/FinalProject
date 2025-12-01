@@ -48,7 +48,7 @@ pipeline {
                 bat """
                     jmeter -n -t jmeter/ATM_Load_Test.jmx ^
                            -l jmeter/results/results.jtl ^
-                           -j jmeter/results/jmeter.log
+                           -j jmeter/results/jmeter.log ^
                            -e -o jmeter/dashboard
                 """
             }
