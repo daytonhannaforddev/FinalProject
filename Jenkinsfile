@@ -49,12 +49,14 @@ pipeline {
                     jmeter -n -t jmeter/ATM_Load_Test.jmx ^
                            -l jmeter/results/results.jtl ^
                            -j jmeter/results/jmeter.log
+                           -e -o jmeter/dashboard
                 """
             }
 
             post {
                 always {
                     archiveArtifacts artifacts: 'jmeter/results/*', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'jmeter/dashboard/**', allowEmptyArchive: true
                 }
                 unsuccessful {
                     echo "Performance test detected failures — marking build as UNSTABLE."
