@@ -6,7 +6,6 @@ pipeline {
     }
 
     stages {
-
         stage('Build JAR') {
             steps {
                 bat 'mvn clean package -DskipTests'
@@ -29,24 +28,23 @@ pipeline {
             }
         }
 
-        stage('Performance Test') {
+        stage('Performance Test (JMeter)') {
             steps {
                 echo 'Running JMeter load test...'
-
+                // Adjust path if needed — ensure jmeter.bat is installed on the Jenkins machine and in PATH
                 bat """
                     jmeter -n -t jmeter/ATM_Load_Test.jmx ^
                            -l jmeter/results/results.jtl ^
                            -j jmeter/results/jmeter.log
                 """
             }
-
             post {
                 always {
-                    archiveArtifacts artifacts: 'jmeter/results/*', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'jmeter/results/*.jtl, jmeter/results/*.log', allowEmptyArchive: true
                 }
                 unsuccessful {
-                    echo 'Performance test failed! Build marked as UNSTABLE.'
-                    unstable('Load test thresholds not met')
+                    echo 'Performance test detected failures — marking build as UNSTABLE.'
+                    unstable('Load test failed or thresholds not met')
                 }
             }
         }
@@ -54,13 +52,13 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline complete!"
+            echo 'Pipeline succeeded — build, deploy, and performance test passed.'
         }
         unstable {
-            echo "Pipeline completed but tests were unstable"
+            echo 'Pipeline succeeded but performance tests have issues (unstable build).'
         }
         failure {
-            echo "Pipeline failed!"
+            echo 'Pipeline failed — check errors above.'
         }
     }
 }
