@@ -38,4 +38,29 @@ pipeline {
             echo "Pipeline failed!"
         }
     }
+
+    stage('Performance Test') {
+    steps {
+        echo 'Running JMeter load test...'
+
+        sh """
+            jmeter \
+                -n \
+                -t jmeter/ATM_Load_Test.jmx \
+                -l jmeter/results/results.jtl \
+                -j jmeter/results/jmeter.log
+        """
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'jmeter/results/*', allowEmptyArchive: true
+        }
+        unsuccessful {
+            echo 'Performance test failed! Build marked as unstable.'
+            unstable('Load test thresholds not met')
+        }
+    }
+}
+
 }
