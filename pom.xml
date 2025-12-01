@@ -20,7 +20,6 @@
         <java.version>17</java.version>
     </properties>
 
-         
     <dependencies>
 
         <!-- Core REST support -->
